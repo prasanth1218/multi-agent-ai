@@ -1,65 +1,69 @@
 
+# Import the required libraries
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import ttk, messagebox
 
 class TodoListApp:
     def __init__(self, root):
+        # Create the main window
         self.root = root
-        self.root.title("Todo List App")
-        self.tasks = []
+        self.root.title('Todo List App')
+        self.root.geometry('400x500')
 
-        # Create GUI components
-        self.task_entry = tk.Entry(self.root, width=50)
-        self.task_entry.pack(padx=10, pady=10)
+        # Create the frames
+        self.header_frame = tk.Frame(self.root, bg='#ff8a00')
+        self.header_frame.pack(fill='x')
 
-        self.add_task_button = tk.Button(self.root, text="Add Task", command=self.add_task)
-        self.add_task_button.pack(padx=10)
+        self.todo_list_frame = tk.Frame(self.root, bg='#fff')
+        self.todo_list_frame.pack(fill='both', expand=True)
 
-        self.task_listbox = tk.Listbox(self.root, width=50)
-        self.task_listbox.pack(padx=10, pady=10)
+        self.add_todo_frame = tk.Frame(self.root, bg='#fff')
+        self.add_todo_frame.pack(fill='x')
 
-        self.delete_task_button = tk.Button(self.root, text="Delete Task", command=self.delete_task)
-        self.delete_task_button.pack(padx=10)
+        # Create the header
+        self.header_label = tk.Label(self.header_frame, text='Todo List App', font=('Arial', 18, 'bold'), bg='#ff8a00', fg='#fff')
+        self.header_label.pack(fill='x', padx=10, pady=10)
 
-        self.save_tasks_button = tk.Button(self.root, text="Save Tasks", command=self.save_tasks)
-        self.save_tasks_button.pack(padx=10)
+        # Create the todo list
+        self.todo_list = tk.Listbox(self.todo_list_frame, font=('Arial', 14), width=40)
+        self.todo_list.pack(fill='both', expand=True, padx=10, pady=10)
 
-        self.load_tasks_button = tk.Button(self.root, text="Load Tasks", command=self.load_tasks)
-        self.load_tasks_button.pack(padx=10)
+        # Create the add todo entry
+        self.add_todo_label = tk.Label(self.add_todo_frame, text='Add Todo:', font=('Arial', 14), bg='#fff')
+        self.add_todo_label.pack(side='left', padx=10, pady=10)
 
-    def add_task(self):
-        task = self.task_entry.get()
-        if task != "":
-            self.tasks.append(task)
-            self.task_listbox.insert(tk.END, task)
-            self.task_entry.delete(0, tk.END)
-        else:
-            messagebox.showwarning("Warning", "Task cannot be empty")
+        self.add_todo_entry = tk.Entry(self.add_todo_frame, font=('Arial', 14), width=20)
+        self.add_todo_entry.pack(side='left', padx=10, pady=10)
 
-    def delete_task(self):
-        try:
-            task_index = self.task_listbox.curselection()[0]
-            self.task_listbox.delete(task_index)
-            self.tasks.pop(task_index)
-        except:
-            messagebox.showwarning("Warning", "No task selected")
+        # Create the add todo button
+        self.add_todo_button = tk.Button(self.add_todo_frame, text='Add', font=('Arial', 14), command=self.add_todo)
+        self.add_todo_button.pack(side='left', padx=10, pady=10)
 
-    def save_tasks(self):
-        with open("tasks.txt", "w") as f:
-            for task in self.tasks:
-                f.write(task + "\n")
-        messagebox.showinfo("Info", "Tasks saved to tasks.txt")
+        # Create the delete todo button
+        self.delete_todo_button = tk.Button(self.add_todo_frame, text='Delete', font=('Arial', 14), command=self.delete_todo)
+        self.delete_todo_button.pack(side='left', padx=10, pady=10)
 
-    def load_tasks(self):
-        try:
-            with open("tasks.txt", "r") as f:
-                self.tasks = [line.strip() for line in f.readlines()]
-            self.task_listbox.delete(0, tk.END)
-            for task in self.tasks:
-                self.task_listbox.insert(tk.END, task)
-        except FileNotFoundError:
-            messagebox.showwarning("Warning", "No tasks file found")
+    def add_todo(self):
+        # Get the todo item text
+        todo_item_text = self.add_todo_entry.get()
 
-root = tk.Tk()
-app = TodoListApp(root)
-root.mainloop()
+        # Check if the todo item text is not empty
+        if todo_item_text:
+            # Add the todo item to the list
+            self.todo_list.insert('end', todo_item_text)
+            # Clear the entry field
+            self.add_todo_entry.delete(0, 'end')
+
+    def delete_todo(self):
+        # Get the selected todo item index
+        selected_index = self.todo_list.curselection()
+
+        # Check if an item is selected
+        if selected_index:
+            # Delete the todo item
+            self.todo_list.delete(selected_index)
+
+if __name__ == '__main__':
+    root = tk.Tk()
+    app = TodoListApp(root)
+    root.mainloop()

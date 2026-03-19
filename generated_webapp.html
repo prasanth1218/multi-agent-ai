@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Care App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-image: linear-gradient(to bottom, #f7f7f7, #ccc);
+            padding: 20px;
+            text-align: center;
+        }
+        .header img {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+            border-radius: 50%;
+        }
+        .app-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .app {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            width: 300px;
+        }
+        .app img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px 10px 0 0;
+        }
+        .app h2 {
+            font-size: 24px;
+            margin-top: 0;
+        }
+        .app p {
+            font-size: 18px;
+        }
+        .about {
+            padding: 20px;
+            background-image: url('https://source.unsplash.com/800x600/?car-care');
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+        }
+        .about h1 {
+            font-size: 48px;
+            text-shadow: 2px 2px 4px #000;
+        }
+        .about p {
+            font-size: 24px;
+            text-shadow: 2px 2px 4px #000;
+        }
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .feature {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            width: 300px;
+        }
+        .feature img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px 10px 0 0;
+        }
+        .feature h2 {
+            font-size: 24px;
+            margin-top: 0;
+        }
+        .feature p {
+            font-size: 18px;
+        }
+        .cta {
+            padding: 20px;
+            background-image: linear-gradient(to bottom, #f7f7f7, #ccc);
+            text-align: center;
+        }
+        .cta button {
+            padding: 20px;
+            border: none;
+            border-radius: 10px;
+            background-color: #4CAF50;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .footer {
+            padding: 20px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <img src="https://picsum.photos/100/100" alt="Car Care App" loading="lazy" onerror="this.src='https://picsum.photos/100/100'">
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Apps</a></li>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <section class="app-container">
+        <div class="app">
+            <img src="https://source.unsplash.com/300x150/?car-maintenance" alt="Car Maintenance" loading="lazy" onerror="this.src='https://picsum.photos/300/150'">
+            <h2>Car Maintenance</h2>
+            <p>Our app helps you keep track of your car's maintenance schedule, including oil changes, tire rotations, and more</p>
+        </div>
+        <div class="app">
+            <img src="https://source.unsplash.com/300x150/?car-insurance" alt="Car Insurance" loading="lazy" onerror="this.src='https://picsum.photos/300/150'">
+            <h2>Car Insurance</h2>
+            <p>Get quotes and compare rates from top insurance providers, and manage your policy all in one place</p>
+        </div>
+        <div class="app">
+            <img src="https://source.unsplash.com/300x150/?car-financing" alt="Car Financing" loading="lazy" onerror="this.src='https://picsum.photos/300/150'">
+            <h2>Car Financing</h2>
+            <p>Apply for financing and get approved for a car loan, and manage your payments and account all in one place</p>
+        </div>
+        <div class="app">
+            <img src="https://source.unsplash.com/300x150/?car-buying" alt="Car Buying" loading="lazy" onerror="this.src='https://picsum.photos/300/150'">
+            <h2>Car Buying</h2>
+            <p>Research and compare prices, find the best deals, and get expert advice on buying a new or used car</p>
+        </div>
+        <div class="app">
+            <img src="https://source.unsplash.com/300x150/?car-selling" alt="Car Selling" loading="lazy" onerror="this.src='https://picsum.photos/300/150'">
+            <h2>Car Selling</h2>
+            <p>Get the best price for your car by listing it for sale on our platform, and get expert advice on how to sell your car quickly and easily</p>
+        </div>
+    </section>
+    <section class="about">
+        <h1>About Us</h1>
+        <p>We're a team of car enthusiasts who are passionate about helping people take care of their vehicles and get the best deals on car-related services</p>
+    </section>
+    <section class="features">
+        <div class="feature">
+            <img src="https://source.unsplash.com/300x150/?car-maintenance" alt="Car Maintenance" loading="lazy" onerror="this.src='https://picsum.photos/300/150'">
+            <h2>Car Maintenance</h2>
+            <p>Our app helps you keep track of your car's maintenance schedule, including oil changes, tire rotations, and more</p>
+        </div>
+        <div class="feature">
+            <img src="https://source.unsplash.com/300x150/?car-insurance" alt="Car Insurance" loading="lazy" onerror="this.src='https://picsum.photos/300/150'">
+            <h2>Car Insurance</h2>
+            <p>Get quotes and compare rates from top insurance providers, and manage your policy all in one place</p>
+        </div>
+        <div class="feature">
+            <img src="https://source.unsplash.com/300x150/?car-financing" alt="Car Financing" loading="lazy" onerror="this.src='https://picsum.photos/300/150'">
+            <h2>Car Financing</h2>
+            <p>Apply for financing and get approved for a car loan, and manage your payments and account all in one place</p>
+        </div>
+    </section>
+    <section class="cta">
+        <button>Get Started Today!</button>
+    </section>
+    <footer class="footer">
+        <p>&copy; 2023 Car Care App. All rights reserved.</p>
+    </footer>
+    <script>
+        // Add event listener to button
+        document.querySelector('.cta button').addEventListener('click', () => {
+            // Add animation to button
+            document.querySelector('.cta button').classList.add('animated');
+            // Remove animation after 1 second
+            setTimeout(() => {
+                document.querySelector('.cta button').classList.remove('animated');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

@@ -2,6 +2,7 @@ import os
 import json
 import hashlib
 import streamlit as st
+from streamlit.components.v1 import html as st_html
 from dotenv import load_dotenv
 from groq import Groq
 from datetime import datetime
@@ -14,7 +15,6 @@ st.set_page_config(page_title="Multi-Agent AI System", page_icon="🤖", layout=
 
 # ========== FILES ==========
 USERS_FILE = "users.json"
-HISTORY_FILE = "chat_history.json"
 
 # ========== USER MANAGEMENT ==========
 def load_users():
@@ -68,17 +68,24 @@ def save_history(email, histories):
         json.dump(histories, f, indent=2)
 
 # ========== AGENTS ==========
-def qa_agent(messages):
+def knowledge_assistant(messages):
     response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
-        messages=[{"role": "system", "content": "You are a helpful AI assistant who answers any question clearly and accurately."}] + messages
+        messages=[{"role": "system", "content": "You are a brilliant knowledge assistant. Answer any question with clarity, depth, and accuracy. Provide well-structured, detailed responses."}] + messages
     )
     return response.choices[0].message.content
 
-def code_builder_agent(messages):
+def dev_engineer(messages):
     response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
-        messages=[{"role": "system", "content": "You are an expert Python developer. When given a request, write complete working Python code with comments. Always wrap code in ```python blocks."}] + messages
+        messages=[{"role": "system", "content": "You are an expert software engineer. When given a request, write complete, working Python code only. Always wrap code in ```python blocks with detailed comments."}] + messages
+    )
+    return response.choices[0].message.content
+
+def code_architect(messages):
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[{"role": "system", "content": "You are a senior software architect and Python developer. When given a request, write complete working Python code with comments. Always wrap code in ```python blocks."}] + messages
     )
     return response.choices[0].message.content
 
@@ -92,6 +99,40 @@ def reviewer_agent(code):
     )
     return response.choices[0].message.content
 
+def ui_designer(messages):
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[{"role": "system", "content": """You are an expert UI/UX designer and full-stack web developer, similar to Lovable AI.
+        When given a request, create a complete, beautiful, modern web application using HTML, CSS, and JavaScript in a single file.
+        Your designs should be:
+        - Visually stunning with modern UI (gradients, shadows, animations)
+        - Fully responsive and mobile-friendly
+        - Interactive with smooth animations
+        - Professional looking with great color schemes
+        - Complete and ready to use
+
+        IMPORTANT RULES FOR IMAGES:
+        - ALWAYS use real working image URLs from https://picsum.photos for any images
+        - For specific topic images use: https://source.unsplash.com/800x600/?keyword (replace keyword with topic)
+        - For example coffee shop: https://source.unsplash.com/800x600/?coffee
+        - For food: https://source.unsplash.com/800x600/?food
+        - For nature: https://source.unsplash.com/800x600/?nature
+        - For restaurant: https://source.unsplash.com/800x600/?restaurant
+        - For technology: https://source.unsplash.com/800x600/?technology
+        - For fashion: https://source.unsplash.com/800x600/?fashion
+        - For travel: https://source.unsplash.com/800x600/?travel
+        - For fitness: https://source.unsplash.com/800x600/?fitness
+        - NEVER use placeholder or empty images
+        - ALWAYS add loading="lazy" to all img tags
+        - ALWAYS add onerror handler to images as fallback:
+          onerror="this.src='https://picsum.photos/800/600'"
+
+        Always wrap your entire code in ```html blocks.
+        Include all CSS inside <style> tags and all JavaScript inside <script> tags within the single HTML file.
+        Make sure the HTML is complete starting from <!DOCTYPE html> to </html>."""}] + messages
+    )
+    return response.choices[0].message.content
+
 def generate_chat_title(messages):
     response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
@@ -102,13 +143,11 @@ def generate_chat_title(messages):
     )
     return response.choices[0].message.content.strip()
 
-# ========== AUTH PAGES ==========
+# ========== LOGIN PAGE ==========
 def auth_page():
     st.title("🤖 Multi-Agent AI System")
     st.markdown("---")
-
     tab1, tab2 = st.tabs(["🔐 Login", "📝 Register"])
-
     with tab1:
         st.markdown("### Welcome Back!")
         col1, col2, col3 = st.columns([1, 2, 1])
@@ -129,7 +168,6 @@ def auth_page():
                         st.error(result)
                 else:
                     st.warning("⚠️ Please fill all fields!")
-
     with tab2:
         st.markdown("### Create New Account!")
         col1, col2, col3 = st.columns([1, 2, 1])
@@ -164,13 +202,15 @@ if "current_name" not in st.session_state:
 if "messages" not in st.session_state:
     st.session_state.messages = []
 if "agent" not in st.session_state:
-    st.session_state.agent = "🔍 Q&A Agent"
+    st.session_state.agent = "🧠 Knowledge Assistant"
 if "chat_histories" not in st.session_state:
     st.session_state.chat_histories = []
 if "theme" not in st.session_state:
     st.session_state.theme = "🌙 Dark Mode"
 if "generated_code" not in st.session_state:
     st.session_state.generated_code = None
+if "generated_html" not in st.session_state:
+    st.session_state.generated_html = None
 if "agent_status" not in st.session_state:
     st.session_state.agent_status = "idle"
 
@@ -234,6 +274,7 @@ def start_new_chat():
     save_current_chat()
     st.session_state.messages = []
     st.session_state.generated_code = None
+    st.session_state.generated_html = None
 
 def load_chat(index):
     st.session_state.messages = st.session_state.chat_histories[index]["messages"].copy()
@@ -262,7 +303,7 @@ st.sidebar.markdown("---")
 
 agent_choice = st.sidebar.radio(
     "Choose Your Agent:",
-    ["🔍 Q&A Agent", "💻 Code Builder Agent", "🔍💻 Build + Review Agent"]
+    ["🧠 Knowledge Assistant", "⚙️ Dev Engineer", "🔧 Code Architect", "🎨 UI/UX Designer"]
 )
 st.session_state.agent = agent_choice
 
@@ -302,20 +343,42 @@ if st.sidebar.button("🗑️ Clear All History"):
 # ========== MAIN UI ==========
 st.title("🤖 Multi-Agent AI System")
 st.markdown(f"**Active Agent:** {agent_choice}")
+
+agent_descriptions = {
+    "🧠 Knowledge Assistant": "Ask me anything! I will answer clearly and accurately.",
+    "⚙️ Dev Engineer": "Tell me what Python app to build and I will code it for you!",
+    "🔧 Code Architect": "I will build your app AND review the code quality!",
+    "🎨 UI/UX Designer": "Describe your dream web app and I will design and build it with live preview and real images!"
+}
+st.info(agent_descriptions[agent_choice])
 st.markdown("---")
 
+# ========== DOWNLOAD BUTTONS ==========
 if st.session_state.generated_code:
     st.download_button(
-        label="📥 Download Generated Code",
+        label="📥 Download Python Code",
         data=st.session_state.generated_code,
         file_name="generated_app.py",
         mime="text/plain"
     )
 
+if st.session_state.generated_html:
+    st.download_button(
+        label="📥 Download Web App (HTML)",
+        data=st.session_state.generated_html,
+        file_name="generated_webapp.html",
+        mime="text/html"
+    )
+    st.markdown("### 👀 Live Preview:")
+    st_html(st.session_state.generated_html, height=600, scrolling=True)
+    st.markdown("---")
+
+# ========== CHAT MESSAGES ==========
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
+# ========== CHAT INPUT ==========
 if prompt := st.chat_input("💬 Type your message here..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
@@ -326,24 +389,24 @@ if prompt := st.chat_input("💬 Type your message here..."):
     with st.chat_message("assistant"):
         with st.spinner(f"⚡ {agent_choice} is working..."):
 
-            if agent_choice == "🔍 Q&A Agent":
-                response = qa_agent(st.session_state.messages)
+            if agent_choice == "🧠 Knowledge Assistant":
+                response = knowledge_assistant(st.session_state.messages)
                 st.markdown(response)
                 st.session_state.messages.append({"role": "assistant", "content": response})
 
-            elif agent_choice == "💻 Code Builder Agent":
-                response = code_builder_agent(st.session_state.messages)
+            elif agent_choice == "⚙️ Dev Engineer":
+                response = dev_engineer(st.session_state.messages)
                 st.markdown(response)
                 if "```python" in response:
                     code = response.split("```python")[1].split("```")[0]
                     st.session_state.generated_code = code
                     with open("generated_app.py", "w") as f:
                         f.write(code)
-                    st.success("✅ Code saved! Use download button above to download!")
+                    st.success("✅ Code saved! Use download button above!")
                 st.session_state.messages.append({"role": "assistant", "content": response})
 
-            elif agent_choice == "🔍💻 Build + Review Agent":
-                build_response = code_builder_agent(st.session_state.messages)
+            elif agent_choice == "🔧 Code Architect":
+                build_response = code_architect(st.session_state.messages)
                 st.markdown(build_response)
                 if "```python" in build_response:
                     code = build_response.split("```python")[1].split("```")[0]
@@ -351,7 +414,7 @@ if prompt := st.chat_input("💬 Type your message here..."):
                     with open("generated_app.py", "w") as f:
                         f.write(code)
                     st.success("✅ Code saved! Now reviewing...")
-                    with st.spinner("🔍 Reviewer Agent checking..."):
+                    with st.spinner("🔍 Reviewing code..."):
                         review = reviewer_agent(code)
                     st.markdown("### 🔍 Code Review Report:")
                     st.markdown(review)
@@ -359,6 +422,17 @@ if prompt := st.chat_input("💬 Type your message here..."):
                     st.session_state.messages.append({"role": "assistant", "content": full_response})
                 else:
                     st.session_state.messages.append({"role": "assistant", "content": build_response})
+
+            elif agent_choice == "🎨 UI/UX Designer":
+                response = ui_designer(st.session_state.messages)
+                st.markdown(response)
+                if "```html" in response:
+                    html_code = response.split("```html")[1].split("```")[0]
+                    st.session_state.generated_html = html_code
+                    with open("generated_webapp.html", "w") as f:
+                        f.write(html_code)
+                    st.success("✅ Web App created! See live preview above the chat!")
+                st.session_state.messages.append({"role": "assistant", "content": response})
 
     st.session_state.agent_status = "idle"
     st.rerun()
